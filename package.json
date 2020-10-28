@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@typefaces-pack/typeface-inter": "^1.0.3",
+    "axios": "^0.21.0",
     "clsx": "^1.1.1",
     "express": "^4.17.1",
     "hoist-non-react-statics": "3.3.0",
@@ -52,6 +53,7 @@
     "react-owl-carousel3": "^2.2.5",
     "react-redux": "7.0.2",
     "react-toastify": "^6.0.9",
+    "react-visibility-sensor": "^5.1.1",
     "redux": "4.0.1",
     "redux-saga": "1.0.2",
     "redux-saga-routines": "^3.1.3",

@@ -9,7 +9,7 @@ import { appWithTranslation } from '../utils/with-i18next';
 
 import 'typeface-metropolis';
 import '@typefaces-pack/typeface-inter';
-
+//import 'semantic-ui-css/semantic.min.css';
 import '../assets/styles/bootstrap.min.css';
 import '../assets/styles/fontawesome.min.css';
 import '../assets/styles/animate.min.css';
