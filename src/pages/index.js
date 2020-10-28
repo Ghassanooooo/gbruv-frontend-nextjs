@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 //import Home from 'containers/Home';
-import { withTranslation } from 'utils/with-i18next';
+import { withTranslation } from '../utils/with-i18next';
 
-const Footer = dynamic(() => import('../layout/footer'));
+const Layout = dynamic(() => import('../components/Layout/Layout'));
 export class IndexPage extends React.PureComponent {
   render() {
     return (
-      <>
+      <Layout>
         <div>home</div>
-        <Footer />
-      </>
+      </Layout>
     );
   }
 }

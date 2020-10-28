@@ -1,13 +1,11 @@
 import React from 'react';
 
 import { Provider } from 'react-redux';
-import { CacheProvider } from '@emotion/core';
-import { cache } from 'emotion';
 import Head from 'next/head';
 import App from 'next/app';
 
-import withReduxStore from 'utils/with-redux-store';
-import { appWithTranslation } from 'utils/with-i18next';
+import withReduxStore from '../utils/with-redux-store';
+import { appWithTranslation } from '../utils/with-i18next';
 
 import 'typeface-metropolis';
 import '@typefaces-pack/typeface-inter';
@@ -22,6 +20,7 @@ import '../assets/styles/style.css';
 import '../assets/styles/responsive.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
 class Srr extends App {
   render() {
     const { Component, pageProps, reduxStore } = this.props;
@@ -32,9 +31,7 @@ class Srr extends App {
         </Head>
 
         <Provider store={reduxStore}>
-          <CacheProvider value={cache}>
-            <Component {...pageProps} />
-          </CacheProvider>
+          <Component {...pageProps} />
         </Provider>
       </React.StrictMode>
     );
