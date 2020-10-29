@@ -1,6 +1,6 @@
 const { setConfig } = require('next/config');
 setConfig(require('../next.config'));
-
+const compression = require('compression');
 const express = require('express');
 const next = require('next');
 const { Signale } = require('signale');
@@ -20,7 +20,7 @@ const signale = new Signale(options);
 (async () => {
   await app.prepare();
   const server = express();
-
+  server.use(compression());
   server.use('/static', express.static('public/static'));
 
   server.get('*', (req, res) => handle(req, res));

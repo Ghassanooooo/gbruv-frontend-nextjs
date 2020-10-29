@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { TemplateEnum } from './Template.types';
 import dynamic from 'next/dynamic';
 
@@ -48,4 +48,4 @@ const Template = (props: any) => {
   return <div>Template not found</div>;
 };
 
-export default Template;
+export default memo(Template);
