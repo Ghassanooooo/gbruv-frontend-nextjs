@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import axios from 'axios';
 
 import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
+import { withTranslation } from '../../utils/with-i18next';
 
 const Layout = dynamic(import('../../components/Layout/Layout'));
 
@@ -51,7 +52,7 @@ const Info = (props: any) => {
   return !!page && <Layout page={page}>{page && renderInfoPage()}</Layout>;
 };
 
-Info.getInitialProps = async (props: any) => {
+export async function getServerSideProps(props: any) {
   const {
     asPath,
     query: { info },
@@ -64,15 +65,20 @@ Info.getInitialProps = async (props: any) => {
     const pageData = await axios(`${backendApiURL}info/${info}`);
     // console.log("pageData now==>", pageData);
     return {
-      namespacesRequired: ['common'],
-      page: pageData.data,
-      path: `${frontendURL}${asPath}`,
-      currentPath: asPath,
+      props: {
+        namespacesRequired: ['common'],
+        page: pageData.data,
+        path: `${frontendURL}${asPath || null}`,
+        currentPath: asPath || null,
+      },
     };
   } catch (ex) {
     console.log('ex ==> ', ex);
-    return { namespacesRequired: ['common'] };
+    return { props: { namespacesRequired: ['common'] } };
   }
+}
+Info.defaultProps = {
+  namespacesRequired: ['common'],
 };
 
-export default Info;
+export default withTranslation('common')(Info);
