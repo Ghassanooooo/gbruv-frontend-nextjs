@@ -5,9 +5,7 @@ import Head from 'next/head';
 import App from 'next/app';
 
 import withReduxStore from '../utils/with-redux-store';
-import { appWithTranslation } from '../utils/with-i18next';
 
-import 'typeface-metropolis';
 import '@typefaces-pack/typeface-inter';
 //import 'semantic-ui-css/semantic.min.css';
 import '../assets/styles/bootstrap.min.css';
@@ -38,4 +36,4 @@ class Srr extends App {
   }
 }
 
-export default appWithTranslation(withReduxStore(Srr));
+export default withReduxStore(Srr);

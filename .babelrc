@@ -9,6 +9,5 @@
     "test": {
       "presets": ["next/babel"]
     }
-  },
-  "plugins": ["emotion"]
+  }
 }

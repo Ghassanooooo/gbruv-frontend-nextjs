@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import axios from 'axios';
 
 import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
-import { withTranslation } from '../../utils/with-i18next';
 
 const Layout = dynamic(import('../../components/Layout/Layout'));
 
@@ -66,7 +65,6 @@ export async function getServerSideProps(props: any) {
     // console.log("pageData now==>", pageData);
     return {
       props: {
-        namespacesRequired: ['common'],
         page: pageData.data,
         path: `${frontendURL}${asPath || null}`,
         currentPath: asPath || null,
@@ -74,11 +72,7 @@ export async function getServerSideProps(props: any) {
     };
   } catch (ex) {
     console.log('ex ==> ', ex);
-    return { props: { namespacesRequired: ['common'] } };
   }
 }
-Info.defaultProps = {
-  namespacesRequired: ['common'],
-};
 
-export default withTranslation('common')(Info);
+export default Info;

@@ -1,12 +1,12 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 //import Home from 'containers/Home';
-import { withTranslation } from '../utils/with-i18next';
+
 import axios from 'axios';
 import Template from '../components/Template/Template';
 const Layout = dynamic(() => import('../components/Layout/Layout'));
 
-const IndexPage = ({ page, frontendURL, asPath }) => {
+const IndexPage = ({ page, frontendURL }) => {
   return (
     !!page && (
       <Layout page={page}>
@@ -27,33 +27,32 @@ IndexPage.getInitialProps = async () => {
 };
 */
 
-IndexPage.getInitialProps = async context => {
-  const { asPath } = context;
+export const getStaticProps = async context => {
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
   try {
-    const pathToArray = asPath
-      .split('/')
-      .filter(item => item !== '' && item !== 'en')
-      .reverse();
-    const pullPageName = pathToArray[0] || 'home';
-    const pageConfig = await axios(`${backendApiURL}pages/${pullPageName}`);
+    const pageConfig = await axios(`${backendApiURL}pages/home`);
     const page = pageConfig.data;
     return {
-      page,
-      frontendURL,
-      asPath,
-      namespacesRequired: ['common'],
+      props: { page, frontendURL },
+      // Next.js will attempt to re-generate the page:
+      // - When a request comes in
+      // - At most once every second
+      revalidate: 1, // In seconds
     };
   } catch (ex) {
     console.log('ERRORS   =====> ', ex);
     return {
-      namespacesRequired: ['common'],
+      props: { page: null, frontendURL },
+      // Next.js will attempt to re-generate the page:
+      // - When a request comes in
+      // - At most once every second
+      revalidate: 1, // In seconds
     };
   }
 };
 
-export default withTranslation('common')(IndexPage);
+export default IndexPage;
 
 /**
  export class IndexPage extends React.PureComponent {
