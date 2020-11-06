@@ -5,10 +5,10 @@ import axios from 'axios';
 
 import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
 
-const Layout = dynamic(import('../../components/Layout/Layout'));
-
+const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
+const Layout = dynamic(() => import('../../components/Layout/Layout'));
 const Info = (props: any) => {
-  const { page, path, currentPath } = props;
+  const { page, path, currentPath, backendApiURL } = props;
   const about = () => {
     const About = dynamic(import('./about/about'));
     return <About page={page} />;
@@ -48,7 +48,13 @@ const Info = (props: any) => {
     }
     return infoContainer();
   };
-  return !!page && <Layout page={page}>{page && renderInfoPage()}</Layout>;
+  return (
+    <>
+      <Layout backendApiURL={backendApiURL}>
+        {!!page && <LayoutSEOana page={page}>{page && renderInfoPage()}</LayoutSEOana>}
+      </Layout>
+    </>
+  );
 };
 
 export async function getServerSideProps(props: any) {
@@ -65,6 +71,7 @@ export async function getServerSideProps(props: any) {
     // console.log("pageData now==>", pageData);
     return {
       props: {
+        backendApiURL: backendApiURL,
         page: pageData.data,
         path: `${frontendURL}${asPath || null}`,
         currentPath: asPath || null,

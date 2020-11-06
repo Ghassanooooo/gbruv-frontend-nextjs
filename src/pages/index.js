@@ -4,19 +4,23 @@ import dynamic from 'next/dynamic';
 
 import axios from 'axios';
 import Template from '../components/Template/Template';
+const LayoutSEOana = dynamic(() => import('../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../components/Layout/Layout'));
-
-const IndexPage = ({ page, frontendURL }) => {
+const IndexPage = ({ page, frontendURL, backendApiURL }) => {
   return (
-    !!page && (
-      <Layout page={page}>
-        {!!page &&
-          !!page.options &&
-          page.options.map(
-            (template, index) => !!template && !!template.template && <Template key={index} {...template} />
-          )}
+    <>
+      <Layout backendApiURL={backendApiURL}>
+        {!!page && (
+          <LayoutSEOana page={page}>
+            {!!page &&
+              !!page.options &&
+              page.options.map(
+                (template, index) => !!template && !!template.template && <Template key={index} {...template} />
+              )}
+          </LayoutSEOana>
+        )}
       </Layout>
-    )
+    </>
   );
 };
 
@@ -34,7 +38,7 @@ export const getStaticProps = async context => {
     const pageConfig = await axios(`${backendApiURL}pages/home`);
     const page = pageConfig.data;
     return {
-      props: { page, frontendURL },
+      props: { page, frontendURL, backendApiURL },
       // Next.js will attempt to re-generate the page:
       // - When a request comes in
       // - At most once every second

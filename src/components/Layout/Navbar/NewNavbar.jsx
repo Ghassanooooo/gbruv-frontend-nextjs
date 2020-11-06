@@ -1,19 +1,30 @@
 import React, { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 import NavbarService from './Navbar.service';
-
+import { useRouter } from 'next/router';
 import TopPanel from './TopPanel';
 import TopHeader from './TopHeader';
 
 import Logo from './Logo';
 
 const NewNavbar = props => {
+  const router = useRouter();
+  const handleClick = (e, path) => {
+    let slug = path
+      .split('/')
+      .filter(i => i != '')
+      .join('_');
+    console.log('SLUG ==> ', slug);
+    e.preventDefault();
+    console.log(path);
+    router.push('/page/[page]', '/page/' + slug);
+  };
   const onNavigationToRoute = (dropdownOptions, idxxx) => {
     return (
       <li key={idxxx}>
-        <Link href={dropdownOptions.path}>
+        <div onClick={e => handleClick(e, dropdownOptions.path)}>
           <a>{dropdownOptions.title}</a>
-        </Link>
+        </div>
       </li>
     );
   };
@@ -21,24 +32,24 @@ const NewNavbar = props => {
   const mainNavbar = (data, idx) => {
     return (
       <li key={idx} className="nav-item megamenu" style={{ width: 'auto', boxShadow: 'none' }}>
-        <Link href={data.path}>
-          <a href={data.path}>
+        <div onClick={e => handleClick(e, data.path)}>
+          <a>
             {' '}
             {data.title}
             <i className="fas fa-chevron-down faArrowDown" />
           </a>
-        </Link>
+        </div>
         <ul className="dropdown-menu">
           <li className="nav-item">
             <div className="container">
               <div className="row">
                 {data.options.map((dropdown, idxx) => (
                   <div className="col" key={idxx}>
-                    <Link href={dropdown.path}>
-                      <a href={dropdown.path}>
+                    <div onClick={e => handleClick(e, dropdown.path)}>
+                      <a>
                         <h6 className="submenu-title">{dropdown.title}</h6>
                       </a>
-                    </Link>
+                    </div>
 
                     <ul className="megamenu-submenu">
                       {dropdown.options.map((dropdownOptions, idxxx) => onNavigationToRoute(dropdownOptions, idxxx))}
@@ -77,7 +88,7 @@ const NewNavbar = props => {
       </li>
     );
   };
-  const { navbar } = NavbarService();
+  const { navbar } = NavbarService(props.backendApiURL);
   const [collapsed, setCollapsed] = useState(true);
 
   const toggleNavbar = () => {
