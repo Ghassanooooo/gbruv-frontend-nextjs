@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 //import Home from 'containers/Home';
 
@@ -8,6 +8,34 @@ import CollectionC3CardBlog from '../../components/Template/CostumeTemplates/Col
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
 const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
+  if (!!page && page.options[0].template === 'TemplateHeaderCarAPD') {
+    return (
+      <Layout backendApiURL={backendApiURL}>
+        {!!page && (
+          <LayoutSEOana page={page} frontendURL={frontendURL}>
+            {!!page &&
+              !!page.options &&
+              page.options.map((template, index) => {
+                console.log('Page ==> ', template);
+                if (index === 0 && template.template === 'TemplateHeaderCarAPD') {
+                  return (
+                    !!template &&
+                    !!template.template && (
+                      <>
+                        <Template key={index} {...template} />
+                        <CollectionC3CardBlog currentPayloads={currentPayloads} />
+                      </>
+                    )
+                  );
+                }
+                return !!template && !!template.template && <Template key={index} {...template} />;
+              })}
+          </LayoutSEOana>
+        )}
+      </Layout>
+    );
+  }
+
   return (
     <>
       <Layout backendApiURL={backendApiURL}>
@@ -16,9 +44,9 @@ const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
           <LayoutSEOana page={page} frontendURL={frontendURL}>
             {!!page &&
               !!page.options &&
-              page.options.map(
-                (template, index) => !!template && !!template.template && <Template key={index} {...template} />
-              )}
+              page.options.map((template, index) => {
+                return !!template && !!template.template && <Template key={index} {...template} />;
+              })}
           </LayoutSEOana>
         )}
       </Layout>

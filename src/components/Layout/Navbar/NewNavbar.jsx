@@ -7,7 +7,7 @@ import TopHeader from './TopHeader';
 
 import Logo from './Logo';
 
-const NewNavbar = props => {
+const NewNavbar = ({ backendApiURL }) => {
   const router = useRouter();
   const slug = path =>
     path
@@ -35,7 +35,7 @@ const NewNavbar = props => {
             <i className="fas fa-chevron-down faArrowDown" />
           </a>
         </Link>
-        <ul className="dropdown-menu">
+        <ul className="dropdown-menu" style={{ minHeight: '40vh' }}>
           <li className="nav-item">
             <div className="container">
               <div className="row">
@@ -59,7 +59,7 @@ const NewNavbar = props => {
       </li>
     );
   };
-  const { navbar } = NavbarService(props.backendApiURL);
+  const { navbar } = NavbarService(backendApiURL);
   const [collapsed, setCollapsed] = useState(true);
 
   const toggleNavbar = () => {
@@ -83,7 +83,7 @@ const NewNavbar = props => {
   navbar && console.log('NEW NAVBAR =====>   ', navbar);
   return (
     <>
-      <TopPanel />
+      <TopPanel backendApiURL={backendApiURL} />
       <TopHeader />
       {navbar && (
         <div className="navbar-area">

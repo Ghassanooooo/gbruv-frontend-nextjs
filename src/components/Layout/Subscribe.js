@@ -8,7 +8,6 @@ export default function Subscribe() {
           <div className="col-lg-6">
             <div className="newsletter-content">
               <h3>Subscribe to our newsletter</h3>
-              <p>A short sentence describing what someone will receive by subscribing</p>
             </div>
           </div>
 

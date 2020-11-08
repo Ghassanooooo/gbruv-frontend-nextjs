@@ -6,8 +6,8 @@ export default function CollectionC3CardBlog({ currentPayloads }) {
     <section className="news-area ptb-60">
       <div className="container">
         <div className="row">
-          {currentPayloads.map(payload => (
-            <div className="col-lg-4 col-md-6">
+          {currentPayloads.map((payload, idx) => (
+            <div className="col-lg-4 col-md-6" key={idx}>
               <div className="single-blog-post">
                 <div className="blog-image">
                   <Link href="/viewDoc/[viewDoc]" as={'/viewDoc/' + payload.contentType + '_' + payload._id}>
