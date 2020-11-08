@@ -84,7 +84,7 @@ const NewNavbar = ({ backendApiURL }) => {
   return (
     <>
       <TopPanel backendApiURL={backendApiURL} />
-      <TopHeader />
+      <TopHeader backendApiURL={backendApiURL} />
       {navbar && (
         <div className="navbar-area">
           <div id="navbar" className="comero-nav">
