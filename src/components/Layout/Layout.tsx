@@ -20,7 +20,7 @@ export default function Layout(props: any) {
         <Navbar backendApiURL={backendApiURL} />
         {props.children}
         <Subscribe />
-        <Footer />
+        <Footer backendApiURL={backendApiURL} />
       </ErrorBound>
     </>
   );
