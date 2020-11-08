@@ -10,26 +10,26 @@ const Layout = dynamic(() => import('../../components/Layout/Layout'));
 const Info = (props: any) => {
   const { page, path, currentPath, backendApiURL, frontendURL } = props;
   const about = () => {
-    const About = dynamic(import('./about/about'));
+    const About = dynamic(import('../../infoComponents/about/about'));
     return <About page={page} />;
   };
 
   const infoContainer = () => {
-    const InfoContainer = dynamic(import('./container/container'));
+    const InfoContainer = dynamic(import('../../infoComponents/container/container'));
     return <InfoContainer page={page} />;
   };
 
   const contact = () => {
-    const Contact = dynamic(import('./contact/contact'));
+    const Contact = dynamic(import('../../infoComponents/contact/contact'));
     return <Contact page={page} />;
   };
   const faq = () => {
-    const Faq = dynamic(import('./faq/faq'));
+    const Faq = dynamic(import('../../infoComponents/faq/faq'));
     return <Faq page={page} />;
   };
 
   const ourTeam = () => {
-    const OurTeam = dynamic(import('./OurTeam'));
+    const OurTeam = dynamic(import('../../infoComponents/OurTeam'));
     return <OurTeam page={page} />;
   };
 

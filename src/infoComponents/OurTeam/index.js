@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { backendApiURL } from '../../../baseApiURL';
+import { backendApiURL } from '../../baseApiURL';
 /*
 const UserCard = ({ icon, title, bio, username }) => (
   <Card
