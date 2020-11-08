@@ -18,6 +18,8 @@ export default function TemplateHeaderCarAPD(props) {
               key={idx}
               className="main-banner item-bg2"
               style={{
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'auto',
                 backgroundImage: `url(${data.image})`,
               }}>
               <div className="d-table">
@@ -33,18 +35,6 @@ export default function TemplateHeaderCarAPD(props) {
                           <p className={isVisible ? 'animated fadeInUp opacityOne' : 'opacityZero'}>
                             {data.description}
                           </p>
-
-                          <Link
-                            href={data.titleUrl}
-                            className={`btn btn-primary ${isVisible ? 'animated fadeInUp opacityOne' : 'opacityZero'}`}>
-                            <a> Shop Women's</a>
-                          </Link>
-
-                          <Link
-                            href={data.descriptionUrl}
-                            className={`btn btn-light ${isVisible ? 'animated fadeInUp opacityOne' : 'opacityZero'}`}>
-                            <a> Shop Men's</a>
-                          </Link>
                         </div>
                       )}
                     </VisibilitySensor>

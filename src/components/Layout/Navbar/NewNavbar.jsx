@@ -52,31 +52,6 @@ const NewNavbar = props => {
                     </ul>
                   </div>
                 ))}
-                <div className="col">
-                  <ul className="megamenu-submenu">
-                    <li>
-                      <div className="aside-trending-products">
-                        <img src="https://cdn.iconscout.com/icon/free/png-256/nike-15-761696.png" alt="image" />
-
-                        <div className="category">
-                          <h4>Top Trending</h4>
-                        </div>
-
-                        <a href="#" />
-                      </div>
-
-                      <div className="aside-trending-products">
-                        <img src="https://cdn.iconscout.com/icon/free/png-256/nike-15-761696.png" alt="image" />
-
-                        <div className="category">
-                          <h4>Popular Products</h4>
-                        </div>
-
-                        <a href="#" />
-                      </div>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
           </li>
