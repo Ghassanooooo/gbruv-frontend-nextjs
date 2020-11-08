@@ -9,22 +9,18 @@ import Logo from './Logo';
 
 const NewNavbar = props => {
   const router = useRouter();
-  const handleClick = (e, path) => {
-    let slug = path
+  const slug = path =>
+    path
       .split('/')
       .filter(i => i != '')
       .join('_');
-    console.log('SLUG ==> ', slug);
-    e.preventDefault();
-    console.log(path);
-    router.push('/page/[page]', '/page/' + slug);
-  };
+
   const onNavigationToRoute = (dropdownOptions, idxxx) => {
     return (
       <li key={idxxx}>
-        <div onClick={e => handleClick(e, dropdownOptions.path)}>
-          <a>{dropdownOptions.title}</a>
-        </div>
+        <Link aria-label={dropdownOptions.title} href="/page/[page]" as={'/page/' + slug(dropdownOptions.path)}>
+          <a href={'/page/' + slug(dropdownOptions.path)}>{dropdownOptions.title}</a>
+        </Link>
       </li>
     );
   };
@@ -32,24 +28,24 @@ const NewNavbar = props => {
   const mainNavbar = (data, idx) => {
     return (
       <li key={idx} className="nav-item megamenu" style={{ width: 'auto', boxShadow: 'none' }}>
-        <div onClick={e => handleClick(e, data.path)}>
-          <a>
+        <Link aria-label={data.title} href="/page/[page]" as={'/page/' + slug(data.path)}>
+          <a href={'/page/' + slug(data.path)}>
             {' '}
             {data.title}
             <i className="fas fa-chevron-down faArrowDown" />
           </a>
-        </div>
+        </Link>
         <ul className="dropdown-menu">
           <li className="nav-item">
             <div className="container">
               <div className="row">
                 {data.options.map((dropdown, idxx) => (
                   <div className="col" key={idxx}>
-                    <div onClick={e => handleClick(e, dropdown.path)}>
-                      <a>
+                    <Link aria-label={dropdown.title} href="/page/[page]" as={'/page/' + slug(dropdown.path)}>
+                      <a href={'/page/' + slug(dropdown.path)}>
                         <h6 className="submenu-title">{dropdown.title}</h6>
                       </a>
-                    </div>
+                    </Link>
 
                     <ul className="megamenu-submenu">
                       {dropdown.options.map((dropdownOptions, idxxx) => onNavigationToRoute(dropdownOptions, idxxx))}
