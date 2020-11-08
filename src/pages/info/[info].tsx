@@ -8,7 +8,7 @@ import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
 const Info = (props: any) => {
-  const { page, path, currentPath, backendApiURL } = props;
+  const { page, path, currentPath, backendApiURL, frontendURL } = props;
   const about = () => {
     const About = dynamic(import('./about/about'));
     return <About page={page} />;
@@ -51,7 +51,11 @@ const Info = (props: any) => {
   return (
     <>
       <Layout backendApiURL={backendApiURL}>
-        {!!page && <LayoutSEOana page={page}>{page && renderInfoPage()}</LayoutSEOana>}
+        {!!page && (
+          <LayoutSEOana frontendURL={frontendURL} page={page}>
+            {page && renderInfoPage()}
+          </LayoutSEOana>
+        )}
       </Layout>
     </>
   );
@@ -71,6 +75,7 @@ export async function getServerSideProps(props: any) {
     // console.log("pageData now==>", pageData);
     return {
       props: {
+        frontendURL,
         backendApiURL: backendApiURL,
         page: pageData.data,
         path: `${frontendURL}${asPath || null}`,

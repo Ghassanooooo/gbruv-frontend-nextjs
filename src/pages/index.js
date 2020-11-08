@@ -11,7 +11,7 @@ const IndexPage = ({ page, frontendURL, backendApiURL }) => {
     <>
       <Layout backendApiURL={backendApiURL}>
         {!!page && (
-          <LayoutSEOana page={page}>
+          <LayoutSEOana page={page} frontendURL={frontendURL}>
             {!!page &&
               !!page.options &&
               page.options.map(
@@ -47,7 +47,7 @@ export const getStaticProps = async context => {
   } catch (ex) {
     console.log('ERRORS   =====> ', ex);
     return {
-      props: { page: null, frontendURL },
+      props: { page: null, frontendURL, backendApiURL },
       // Next.js will attempt to re-generate the page:
       // - When a request comes in
       // - At most once every second

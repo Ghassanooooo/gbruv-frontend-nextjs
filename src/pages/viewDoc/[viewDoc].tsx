@@ -12,7 +12,7 @@ const ViewDoc = ({ frontendURL, backendApiURL, doc }) => {
     <>
       <Layout backendApiURL={backendApiURL}>
         {!!doc && (
-          <LayoutSEOana page={doc}>
+          <LayoutSEOana page={doc} frontendURL={frontendURL}>
             <main className="products-details-area pt-60">
               <div className="container">
                 <div className="section-title">

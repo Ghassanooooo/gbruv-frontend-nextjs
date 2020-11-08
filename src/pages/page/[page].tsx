@@ -13,7 +13,7 @@ const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
       <Layout backendApiURL={backendApiURL}>
         <CollectionC3CardBlog currentPayloads={currentPayloads} />
         {!!page && (
-          <LayoutSEOana page={page}>
+          <LayoutSEOana page={page} frontendURL={frontendURL}>
             {!!page &&
               !!page.options &&
               page.options.map(
