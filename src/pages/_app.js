@@ -25,7 +25,7 @@ class Srr extends App {
     return (
       <React.StrictMode>
         <Head>
-          <title>React Next Boilerplate</title>
+          <title>Gbruv</title>
         </Head>
 
         <Provider store={reduxStore}>
