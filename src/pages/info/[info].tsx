@@ -1,12 +1,12 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { getInfoPage, getFooterConfig, getNavbarConfig } from '../../shared/fetchers';
+import { getInfoPage } from '../../shared/fetchers';
 import useSWR from 'swr';
 import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
-//const { data } = useSWR('/api/posts', fetcher, { initialData: props.posts })
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
-const Info = ({ page, currentPath, backendApiURL, frontendURL }) => {
+const Info = ({ pageInitData, currentPath, backendApiURL, frontendURL, infoPageURL }) => {
+  const { data: page } = useSWR(infoPageURL, getInfoPage, { initialData: pageInitData });
   const about = () => {
     const About = dynamic(import('../../infoComponents/about/about'));
     return <About page={page} />;
@@ -70,16 +70,14 @@ export async function getServerSideProps(props: any) {
   const { frontendURL } = process.env;
   let infoPageURL = `${backendApiURL}info/${info}`;
 
-  const page = await getInfoPage(infoPageURL);
+  const pageInitData = await getInfoPage(infoPageURL);
 
   return {
     props: {
       infoPageURL,
       frontendURL,
       backendApiURL: backendApiURL,
-      page,
-
-      path: `${frontendURL}${asPath || null}`,
+      pageInitData,
       currentPath: asPath || null,
     },
   };

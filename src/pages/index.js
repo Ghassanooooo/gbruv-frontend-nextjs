@@ -2,10 +2,12 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Template from '../components/Template/Template';
 import { getPageConfig } from '../shared/fetchers';
-
+import useSWR from 'swr';
 const LayoutSEOana = dynamic(() => import('../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../components/Layout/Layout'));
-const IndexPage = ({ page, frontendURL, backendApiURL }) => {
+const IndexPage = ({ frontendURL, backendApiURL, pageInitData }) => {
+  const { data: page } = useSWR(`${backendApiURL}pages/home`, getPageConfig, { initialData: pageInitData });
+
   return (
     <Layout backendApiURL={backendApiURL}>
       {!!page && (
@@ -24,22 +26,11 @@ const IndexPage = ({ page, frontendURL, backendApiURL }) => {
 export const getStaticProps = async () => {
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
-  try {
-    const page = await getPageConfig(`${backendApiURL}pages/home`);
-
-    return {
-      props: { page, frontendURL, backendApiURL },
-
-      revalidate: 1,
-    };
-  } catch (ex) {
-    console.log('ERRORS   =====> ', ex);
-    return {
-      props: { page: null, frontendURL, backendApiURL },
-
-      revalidate: 1,
-    };
-  }
+  const pageInitData = await getPageConfig(`${backendApiURL}pages/home`);
+  return {
+    props: { pageInitData, frontendURL, backendApiURL },
+    revalidate: 1,
+  };
 };
 
 export default IndexPage;
