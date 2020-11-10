@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function CollectionC3CardBlog({ currentPayloads }) {
   return currentPayloads && currentPayloads.length > 0 ? (
@@ -12,7 +13,7 @@ export default function CollectionC3CardBlog({ currentPayloads }) {
                 <div className="blog-image">
                   <Link href="/viewDoc/[viewDoc]" as={'/viewDoc/' + payload.contentType + '_' + payload._id}>
                     <a>
-                      <img src={payload.image} alt={payload.title} />
+                      <Image src={payload.image} alt={payload.title} width={350} height={350} />
                     </a>
                   </Link>
 

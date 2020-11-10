@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 
 import dynamic from 'next/dynamic';
 const VisibilitySensor = dynamic(() => import('react-visibility-sensor'), { ssr: false });

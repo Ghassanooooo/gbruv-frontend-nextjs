@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Axios from 'axios';
-
+import Image from 'next/image'
 import { backendApiURL } from '../../../../baseApiURL';
 
 enum Category {
@@ -90,7 +90,7 @@ const ProductsCollections = (props: any) => {
               <Link href={`/product-article/${product._id}`}>
                 <a>
                   <div className="collections-box">
-                    <img src={product.image} alt="image" style={{ width: 350, height: 350 }} />
+                    <Image src={product.image} {product.title}  width={350} height={350}  />
 
                     <div className="category">
                       <h4>{product.title}</h4>
