@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import useSWR from 'swr';
-import { getPageConfig, getCurrentPayloads } from '../../shared/fetchers';
+import { getPageConfig, getCurrentPayloads, slugResolve } from '../../shared/fetchers';
 
 import Template from '../../components/Template/Template';
 import CollectionC3CardBlog from '../../components/Template/CostumeTemplates/CollectionC3CardBlog/CollectionC3CardBlog';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
-const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
+const Page = ({ pageInitData, frontendURL, backendApiURL, currentPayloadsInitData, pageURL, currentPayloadsURL }) => {
+  const { data: page } = useSWR(pageURL, getPageConfig, { initialData: pageInitData });
+  const { data: currentPayloads } = useSWR(currentPayloadsURL, getCurrentPayloads, {
+    initialData: currentPayloadsInitData,
+  });
+
   if (!!page && page.options[0].template === 'TemplateHeaderCarAPD') {
     return (
       <Layout backendApiURL={backendApiURL}>
@@ -21,10 +26,10 @@ const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
                   return (
                     !!template &&
                     !!template.template && (
-                      <>
-                        <Template key={index} {...template} />
+                      <div key={index}>
+                        <Template {...template} />
                         <CollectionC3CardBlog currentPayloads={currentPayloads} />
-                      </>
+                      </div>
                     )
                   );
                 }
@@ -60,7 +65,7 @@ export const getServerSideProps = async context => {
   } = context;
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
-  let slug = page.split('_').filter(i => i != '');
+  let slug = slugResolve(page);
   let rout = slug[slug.length - 1];
   let contentType = slug[0];
   let categorie = slug[1];
@@ -70,26 +75,20 @@ export const getServerSideProps = async context => {
     backendApiURL + contentType
   }?categorie=${categorie}&subCategorie=${subCategorie}&subSubCategorie=${subSubCategorie}`;
   let pageURL = `${backendApiURL}pages/${rout}`;
-  try {
-    const currentPayloads = await getCurrentPayloads(currentPayloadsURL);
-    const page = await getPageConfig(pageURL);
+  const currentPayloadsInitData = await getCurrentPayloads(currentPayloadsURL);
+  const pageInitData = await getPageConfig(pageURL);
 
-    return {
-      props: {
-        currentPayloadsURL,
-        pageURL,
-        page,
-        frontendURL,
-        backendApiURL,
-        currentPayloads,
-      },
-    };
-  } catch (ex) {
-    console.log('ERRORS   =====> ', ex);
-    return {
-      props: { page: null, frontendURL },
-    };
-  }
+  return {
+    props: {
+      pageInitData,
+      currentPayloadsURL,
+      pageURL,
+      page,
+      frontendURL,
+      backendApiURL,
+      currentPayloadsInitData,
+    },
+  };
 };
 
 export default Page;

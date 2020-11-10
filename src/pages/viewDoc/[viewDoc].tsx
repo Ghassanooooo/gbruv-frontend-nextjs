@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { getArticleConfig, getCurrentTags } from '../../shared/fetchers';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
-const ViewDoc = ({ contentType, currentTags, frontendURL, backendApiURL, doc, docURL }) => {
+const ViewDoc = ({ currentTags, frontendURL, backendApiURL, docInitData, docURL }) => {
+  const { data: doc } = useSWR(docURL, getArticleConfig, { initialData: docInitData });
+
   return (
     <>
       <Layout backendApiURL={backendApiURL}>
@@ -85,8 +87,7 @@ export const getServerSideProps = async context => {
   let contentType = slug[0];
   let docURL = backendApiURL + contentType + '/view/' + rout;
   try {
-    const doc = await getArticleConfig(docURL);
-    const { contentType } = doc;
+    const docInitData = await getArticleConfig(docURL);
     const currentTags = await getCurrentTags(backendApiURL + 'navbar/', contentType);
 
     return {
@@ -96,7 +97,7 @@ export const getServerSideProps = async context => {
         docURL,
         frontendURL,
         backendApiURL,
-        doc,
+        docInitData,
       },
     };
   } catch (ex) {

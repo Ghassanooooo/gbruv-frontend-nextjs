@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+export const slugResolve = path => path.split('_').filter(i => i != '');
+
 export const slug = path =>
   path
     .split('/')
