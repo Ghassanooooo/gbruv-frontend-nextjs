@@ -1,6 +1,8 @@
 const TerserPlugin = require('terser-webpack-plugin');
-
-module.exports = {
+const withPlugins = require('next-compose-plugins');
+const withBabelMinify = require('next-babel-minify');
+const withProgressBar = require('next-progressbar');
+const nextConfigs = {
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()],
@@ -55,3 +57,17 @@ module.exports = {
     return config;
   },
 };
+
+module.exports = withPlugins(
+  [
+    // plugin to import css
+
+    withBabelMinify(),
+    withProgressBar({
+      progressBar: {
+        fancy: true,
+      },
+    }),
+  ],
+  nextConfigs
+);

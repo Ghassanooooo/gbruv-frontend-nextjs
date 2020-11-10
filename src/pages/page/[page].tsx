@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-//import Home from 'containers/Home';
+import useSWR from 'swr';
+import { getPageConfig, getCurrentPayloads } from '../../shared/fetchers';
 
-import axios from 'axios';
 import Template from '../../components/Template/Template';
 import CollectionC3CardBlog from '../../components/Template/CostumeTemplates/CollectionC3CardBlog/CollectionC3CardBlog';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
@@ -56,32 +56,33 @@ const Page = ({ page, frontendURL, backendApiURL, currentPayloads }) => {
 
 export const getServerSideProps = async context => {
   const {
-    asPath,
     query: { page },
   } = context;
-
+  const { backendApiURL } = process.env;
+  const { frontendURL } = process.env;
   let slug = page.split('_').filter(i => i != '');
   let rout = slug[slug.length - 1];
   let contentType = slug[0];
   let categorie = slug[1];
   let subCategorie = slug[2];
-
   let subSubCategorie = slug[3];
-
-  console.log('slug ==> slug==>', slug);
-  const { backendApiURL } = process.env;
-  const { frontendURL } = process.env;
+  let currentPayloadsURL = `${
+    backendApiURL + contentType
+  }?categorie=${categorie}&subCategorie=${subCategorie}&subSubCategorie=${subSubCategorie}`;
+  let pageURL = `${backendApiURL}pages/${rout}`;
   try {
-    const currentPayloads = await axios(
-      backendApiURL +
-        `${contentType}?categorie=${categorie}&subCategorie=${subCategorie}&subSubCategorie=${subSubCategorie}`
-    );
-    console.log('currentPayloads now==>', currentPayloads.data);
-    const pageConfig = await axios(`${backendApiURL}pages/${rout}`);
-    const page = pageConfig.data;
-    console.log('page   =====> ', page);
+    const currentPayloads = await getCurrentPayloads(currentPayloadsURL);
+    const page = await getPageConfig(pageURL);
+
     return {
-      props: { page, frontendURL, backendApiURL, currentPayloads: currentPayloads.data },
+      props: {
+        currentPayloadsURL,
+        pageURL,
+        page,
+        frontendURL,
+        backendApiURL,
+        currentPayloads,
+      },
     };
   } catch (ex) {
     console.log('ERRORS   =====> ', ex);

@@ -1,27 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ErrorBound from './ErrorBound';
-
-import SEO from '../../SEO';
-
-import { initGA, logPageView } from '../../GoogleAnalytics';
-
 import Navbar from './Navbar/NewNavbar';
-
 import Footer from './Footer';
-
 import Subscribe from './Subscribe';
+import useSWR from 'swr';
+import { getNavbarConfig, getFooterConfig, getArticleConfig, getCurrentTags, slug } from '../../shared/fetchers';
 
-export default function Layout(props: any) {
-  const { page, backendApiURL } = props;
+export default function Layout({ backendApiURL, children }) {
+  const { data: navbar } = useSWR(backendApiURL + 'navbar/', getNavbarConfig);
+  const [footerData, setFooterData] = useState();
 
+  function footerConfig() {
+    if (!!navbar) {
+      const footer: any = [];
+      navbar.map((cat, idx) => {
+        cat && footer.push({ title: cat.title, options: [] });
+        cat &&
+          cat.options.map(col => {
+            col && footer[idx].options.push({ path: '/page/' + slug(col.path), title: col.title });
+          });
+      });
+
+      setFooterData(footer);
+    }
+  }
+  useEffect(() => {
+    footerConfig();
+  }, [navbar]);
   return (
     <>
-      <ErrorBound>
-        <Navbar backendApiURL={backendApiURL} />
-        {props.children}
-        <Subscribe />
-        <Footer backendApiURL={backendApiURL} />
-      </ErrorBound>
+      {navbar && (
+        <ErrorBound>
+          <Navbar backendApiURL={backendApiURL} navbar={navbar} />
+          {children}
+          <Subscribe />
+          <Footer footerData={footerData} />
+        </ErrorBound>
+      )}
     </>
   );
 }
+
+//   {navbar && JSON.stringify(navbar, null, 4)}

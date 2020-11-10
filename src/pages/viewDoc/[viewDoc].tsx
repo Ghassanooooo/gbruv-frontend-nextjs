@@ -1,47 +1,11 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-//import Home from 'containers/Home';
 import Link from 'next/link';
-import axios from 'axios';
-import Template from '../../components/Template/Template';
-import CollectionC3CardBlog from '../../components/Template/CostumeTemplates/CollectionC3CardBlog/CollectionC3CardBlog';
+import useSWR from 'swr';
+import { getArticleConfig, getCurrentTags } from '../../shared/fetchers';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
-const ViewDoc = ({ frontendURL, backendApiURL, doc }) => {
-  const [currentTags, setCurrentTags] = useState(null);
-
-  const getCurrentArticle = async () => {
-    if (!!doc) {
-      const { contentType } = doc;
-      const slug = path =>
-        path
-          .split('/')
-          .filter(i => i != '')
-          .join('_');
-      try {
-        const currentPayloads = [];
-        const navbarPaylod = await axios(backendApiURL + 'navbar/');
-
-        navbarPaylod.data.map(payload => {
-          if (payload.contentType === contentType) {
-            payload.options.map(option => {
-              option.options.map(load => {
-                currentPayloads.push({ title: load.title, path: '/page/' + slug(load.path) });
-              });
-            });
-          }
-        });
-        setCurrentTags(currentPayloads);
-      } catch (ex) {
-        console.log(ex);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getCurrentArticle();
-  }, []);
-  console.log('DOC ==> ', doc);
+const ViewDoc = ({ contentType, currentTags, frontendURL, backendApiURL, doc, docURL }) => {
   return (
     <>
       <Layout backendApiURL={backendApiURL}>
@@ -112,25 +76,28 @@ const ViewDoc = ({ frontendURL, backendApiURL, doc }) => {
 
 export const getServerSideProps = async context => {
   const {
-    asPath,
     query: { viewDoc },
   } = context;
-
+  const { backendApiURL } = process.env;
+  const { frontendURL } = process.env;
   let slug = viewDoc.split('_').filter(i => i != '');
   let rout = slug[slug.length - 1];
   let contentType = slug[0];
-  let categorie = slug[1];
-  let subCategorie = slug[2];
-
-  let subSubCategorie = slug[3];
-
-  console.log('slug ==> slug==>', slug);
-  const { backendApiURL } = process.env;
-  const { frontendURL } = process.env;
+  let docURL = backendApiURL + contentType + '/view/' + rout;
   try {
-    const doc = await axios(backendApiURL + contentType + '/view/' + rout);
+    const doc = await getArticleConfig(docURL);
+    const { contentType } = doc;
+    const currentTags = await getCurrentTags(backendApiURL + 'navbar/', contentType);
+
     return {
-      props: { viewDoc, frontendURL, backendApiURL, doc: doc.data },
+      props: {
+        contentType,
+        currentTags,
+        docURL,
+        frontendURL,
+        backendApiURL,
+        doc,
+      },
     };
   } catch (ex) {
     console.log('ERRORS   =====> ', ex);
@@ -141,15 +108,3 @@ export const getServerSideProps = async context => {
 };
 
 export default ViewDoc;
-
-/**
- *   {!!page && (
-          <LayoutSEOana page={page}>
-            {!!page &&
-              !!page.options &&
-              page.options.map(
-                (template, index) => !!template && !!template.template && <Template key={index} {...template} />
-              )}
-          </LayoutSEOana>
-        )}
- */

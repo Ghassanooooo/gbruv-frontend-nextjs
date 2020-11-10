@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 
 import dynamic from 'next/dynamic';
 
@@ -18,34 +17,31 @@ const options = {
   navText: ["<i class='fas fa-chevron-left'></i>", "<i class='fas fa-chevron-right'></i>"],
 };
 
-const TopPanel = ({ backendApiURL }) => {
+const TopPanel = ({ navbar }) => {
   const [pages, setPages] = useState(null);
   const [display, setDisplay] = useState(false);
   const [panel, setPanel] = useState(true);
+
   const navbarPages = async () => {
     const slug = path =>
       path
         .split('/')
         .filter(i => i != '')
         .join('_');
-    try {
+    if (navbar) {
       const crawl = [];
 
-      const navbarData = await axios(backendApiURL + 'navbar/');
-
-      navbarData.data.map((cat, idx) => {
+      navbar.map(cat => {
         cat &&
           cat.options.map(col => {
             col &&
+              col.options &&
               col.options.map(link => {
                 crawl.push({ categoryTitle: cat.title, subSubCatTitle: link.title, path: '/page/' + slug(link.path) });
               });
           });
       });
       setPages(crawl);
-      console.log('TopPanel ==> ', crawl);
-    } catch (ex) {
-      console.log('Footer ==> ', ex);
     }
   };
   useEffect(() => {

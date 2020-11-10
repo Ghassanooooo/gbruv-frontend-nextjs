@@ -1,6 +1,5 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 
 const infoPages = [
   { path: '/info/about', title: 'about' },
@@ -14,34 +13,7 @@ const infoPages = [
   { path: '/info/contact', title: 'Contact' },
 ];
 
-function Footer({ backendApiURL }) {
-  const [pages, setPages] = useState(null);
-  const navbarPages = async () => {
-    const slug = path =>
-      path
-        .split('/')
-        .filter(i => i != '')
-        .join('_');
-    try {
-      const crawl = [];
-
-      const navbarData = await axios(backendApiURL + 'navbar/');
-
-      navbarData.data.map((cat, idx) => {
-        cat && crawl.push({ title: cat.title, options: [] });
-        cat &&
-          cat.options.map(col => {
-            col && crawl[idx].options.push({ path: '/page/' + slug(col.path), title: col.title });
-          });
-      });
-      setPages(crawl);
-    } catch (ex) {
-      console.log('Footer ==> ', ex);
-    }
-  };
-  useEffect(() => {
-    navbarPages();
-  }, []);
+function Footer({ footerData }) {
   return (
     <>
       <footer className="footer-area">
@@ -62,8 +34,8 @@ function Footer({ backendApiURL }) {
               </div>
             </div>
 
-            {pages &&
-              pages.map((page, idx) => (
+            {footerData &&
+              footerData.map((page, idx) => (
                 <div className="col-lg-3 col-md-6" key={idx}>
                   <div className="single-footer-widget">
                     <h3>{page.title}</h3>

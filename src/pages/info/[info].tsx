@@ -1,14 +1,12 @@
-// #region Global Imports
 import React from 'react';
 import dynamic from 'next/dynamic';
-import axios from 'axios';
-
+import { getInfoPage, getFooterConfig, getNavbarConfig } from '../../shared/fetchers';
+import useSWR from 'swr';
 import { InfoPageEnum } from '../../components/Layout/Navbar/Navbar.types';
-
+//const { data } = useSWR('/api/posts', fetcher, { initialData: props.posts })
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
 const Layout = dynamic(() => import('../../components/Layout/Layout'));
-const Info = (props: any) => {
-  const { page, path, currentPath, backendApiURL, frontendURL } = props;
+const Info = ({ page, currentPath, backendApiURL, frontendURL }) => {
   const about = () => {
     const About = dynamic(import('../../infoComponents/about/about'));
     return <About page={page} />;
@@ -64,27 +62,28 @@ const Info = (props: any) => {
 export async function getServerSideProps(props: any) {
   const {
     asPath,
+
     query: { info },
   } = props;
 
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
+  let infoPageURL = `${backendApiURL}info/${info}`;
 
-  try {
-    const pageData = await axios(`${backendApiURL}info/${info}`);
-    // console.log("pageData now==>", pageData);
-    return {
-      props: {
-        frontendURL,
-        backendApiURL: backendApiURL,
-        page: pageData.data,
-        path: `${frontendURL}${asPath || null}`,
-        currentPath: asPath || null,
-      },
-    };
-  } catch (ex) {
-    console.log('ex ==> ', ex);
-  }
+  const page = await getInfoPage(infoPageURL);
+
+  return {
+    props: {
+      infoPageURL,
+      frontendURL,
+      backendApiURL: backendApiURL,
+      page,
+
+      path: `${frontendURL}${asPath || null}`,
+      currentPath: asPath || null,
+    },
+  };
 }
 
 export default Info;
+getInfoPage;
