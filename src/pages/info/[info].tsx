@@ -59,13 +59,25 @@ const Info = ({ pageInitData, currentPath, backendApiURL, frontendURL, infoPageU
   );
 };
 
-export async function getServerSideProps(props: any) {
+export async function getStaticPaths() {
+  const params = Object.values(InfoPageEnum).map(path => {
+    let pathToArray = path.split('/').filter(i => i != '');
+    let extParam = pathToArray[pathToArray.length - 1];
+    return { params: { info: extParam } };
+  });
+  return {
+    paths: params,
+    fallback: true,
+  };
+}
+
+export async function getStaticProps(props: any) {
   const {
     asPath,
-
-    query: { info },
+    params: { info },
   } = props;
 
+  console.log('getStaticProps ==> ', props);
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
   let infoPageURL = `${backendApiURL}info/${info}`;
@@ -80,8 +92,8 @@ export async function getServerSideProps(props: any) {
       pageInitData,
       currentPath: asPath || null,
     },
+    revalidate: 1,
   };
 }
 
 export default Info;
-getInfoPage;

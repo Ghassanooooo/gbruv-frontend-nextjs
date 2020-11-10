@@ -1,6 +1,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import Image from 'next/image';
+import axios from 'axios';
 import useSWR from 'swr';
 import { getArticleConfig, getCurrentTags } from '../../shared/fetchers';
 const LayoutSEOana = dynamic(() => import('../../components/Layout/LayoutSEOana'));
@@ -19,7 +21,7 @@ const ViewDoc = ({ currentTags, frontendURL, backendApiURL, docInitData, docURL 
                   <div className="col-lg-8 col-md-12 offset-lg-2 offset-md-0">
                     <div className="blog-details">
                       <div className="article-img">
-                        <img width="800" height="600" src={doc.image} alt={doc.title} />
+                        <Image width={800} height={600} src={doc.image} alt={doc.title} quality={100} />
                       </div>
 
                       <div className="article-content">
@@ -75,37 +77,60 @@ const ViewDoc = ({ currentTags, frontendURL, backendApiURL, docInitData, docURL 
     </>
   );
 };
+/*
+const params = Object.values(InfoPageEnum).map(path => {
+  let pathToArray = path.split('/').filter(i => i != '');
+  let extParam = pathToArray[pathToArray.length - 1];
+  return { params: { info: extParam } };
+});
+*/
+export async function getStaticPaths() {
+  const { backendApiURL } = process.env;
+  const DocsData = await axios(backendApiURL + 'docs/all');
+  const BlogsData = await axios(backendApiURL + 'blogs/all');
+  const blogsParams = BlogsData.data.map(blog => {
+    let param = 'blogs_' + blog._id;
+    return { params: { viewDoc: param } };
+  });
+  const docsParams = DocsData.data.map(doc => {
+    let param = 'docs_' + doc._id;
+    return { params: { viewDoc: param } };
+  });
 
-export const getServerSideProps = async context => {
+  const params = [...blogsParams, ...docsParams];
+
+  return {
+    paths: params,
+    fallback: true,
+  };
+}
+
+export const getStaticProps = async context => {
   const {
-    query: { viewDoc },
+    params: { viewDoc },
   } = context;
+
   const { backendApiURL } = process.env;
   const { frontendURL } = process.env;
   let slug = viewDoc.split('_').filter(i => i != '');
   let rout = slug[slug.length - 1];
   let contentType = slug[0];
   let docURL = backendApiURL + contentType + '/view/' + rout;
-  try {
-    const docInitData = await getArticleConfig(docURL);
-    const currentTags = await getCurrentTags(backendApiURL + 'navbar/', contentType);
 
-    return {
-      props: {
-        contentType,
-        currentTags,
-        docURL,
-        frontendURL,
-        backendApiURL,
-        docInitData,
-      },
-    };
-  } catch (ex) {
-    console.log('ERRORS   =====> ', ex);
-    return {
-      props: { viewDoc: null, frontendURL },
-    };
-  }
+  const docInitData = await getArticleConfig(docURL);
+  const currentTags = await getCurrentTags(backendApiURL + 'navbar/', contentType);
+
+  return {
+    props: {
+      contentType,
+      currentTags,
+      docURL,
+      frontendURL,
+      backendApiURL,
+      docInitData,
+    },
+    revalidate: 1,
+  };
 };
 
 export default ViewDoc;

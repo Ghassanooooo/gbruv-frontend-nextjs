@@ -2,6 +2,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const withPlugins = require('next-compose-plugins');
 const withBabelMinify = require('next-babel-minify');
 const withProgressBar = require('next-progressbar');
+const optimizedImages = require('next-optimized-images');
+
 const nextConfigs = {
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -68,7 +70,7 @@ const nextConfigs = {
 module.exports = withPlugins(
   [
     // plugin to import css
-
+    [optimizedImages],
     withBabelMinify(),
     withProgressBar({
       progressBar: {
